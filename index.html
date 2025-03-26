@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Finder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .recipe-details-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      overflow: hidden;
+    }
+    .recipe-card:hover .recipe-details-overlay {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <header class="bg-green-600 text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Recipe Finder</h1>
+      <div class="flex space-x-4">
+        <button id="favorites-button" class="bg-white text-green-600 px-4 py-2 rounded hover:bg-gray-100">
+          Favorites
+        </button>
+        <button id="cart-button" class="bg-white text-green-600 px-4 py-2 rounded hover:bg-gray-100">
+          Cart
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-4">
+    <!-- Slideshow Section -->
+    <section class="mb-8">
+      <div id="recipe-slideshow" class="bg-white rounded-lg shadow-md h-64 overflow-hidden relative">
+        <!-- Slideshow content will be loaded here -->
+      </div>
+      <div class="flex justify-center mt-2 space-x-4">
+        <button id="prev-slide" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Previous</button>
+        <button id="next-slide" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Next</button>
+      </div>
+    </section>
+
+    <!-- Filter Buttons -->
+    <section class="mb-6">
+      <h2 class="text-xl font-bold mb-2">Filter by Cuisine:</h2>
+      <div id="filter-buttons-container" class="flex flex-wrap gap-2 mb-4">
+        <!-- Filter buttons will be loaded here -->
+      </div>
+    </section>
+
+    <!-- Recipes Grid -->
+    <section>
+      <div id="recipes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <!-- Recipes will be loaded here -->
+      </div>
+      <div class="flex justify-center mt-6">
+        <button id="more" class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700">
+          Load More Recipes
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Loading Modal -->
+  <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <p class="text-lg font-semibold">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Favorites Modal -->
+  <div id="favorites-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Your Favorites</h2>
+        <button id="close-favorites" class="text-gray-500 hover:text-gray-700">
+          &times;
+        </button>
+      </div>
+      <ul id="favorites-list">
+        <!-- Favorites will be loaded here -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Your Cart</h2>
+        <button id="close-cart" class="text-gray-500 hover:text-gray-700">
+          &times;
+        </button>
+      </div>
+      <ul id="cart-list">
+        <!-- Cart items will be loaded here -->
+      </ul>
+      <div class="mt-4 pt-4 border-t">
+        <p id="cart-total" class="text-lg font-bold">Total: $0.00</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
