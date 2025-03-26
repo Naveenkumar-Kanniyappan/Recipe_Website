@@ -1,3 +1,4 @@
+// Variables
 let recipesContainer = document.getElementById('recipes');
 let favoritesList = [];
 let cartItems = [];
@@ -9,6 +10,7 @@ let currentSlide = 0;
 let slidesData = [];
 let cuisineList = [];
 
+// DOM Elements
 let loadingElement = document.getElementById('loading-modal');
 let favoritesModal = document.getElementById('favorites-modal');
 let cartModal = document.getElementById('cart-modal');
@@ -19,6 +21,7 @@ let cartElement = document.getElementById('cart-list');
 let cartTotal = document.getElementById('cart-total');
 let moreButton = document.getElementById('more');
 
+// Search elements
 let searchInput = document.getElementById('search-input');
 let searchButton = document.getElementById('search-button');
 let recipeModal = document.getElementById('recipe-modal');
@@ -32,6 +35,15 @@ let modalAddFavorite = document.getElementById('modal-add-favorite');
 let closeRecipe = document.getElementById('close-recipe');
 let currentRecipe = null;
 
+// Button elements
+let favoritesButton = document.getElementById('favorites-button');
+let cartButton = document.getElementById('cart-button');
+let closeFavorites = document.getElementById('close-favorites');
+let closeCart = document.getElementById('close-cart');
+let prevSlideButton = document.getElementById('prev-slide');
+let nextSlideButton = document.getElementById('next-slide');
+
+// Start the website
 function startWebsite() {
   setupEvents();
   getCuisines(true);
@@ -39,18 +51,19 @@ function startWebsite() {
   getSlideshow();
 }
 
+// Setup all event listeners
 function setupEvents() {
-  document.getElementById('favorites-button').addEventListener('click', showFavorites);
-  document.getElementById('cart-button').addEventListener('click', showCart);
+  favoritesButton.addEventListener('click', showFavorites);
+  cartButton.addEventListener('click', showCart);
   moreButton.addEventListener('click', loadMore);
-  document.getElementById('close-favorites').addEventListener('click', function() {
+  closeFavorites.addEventListener('click', function() {
     favoritesModal.classList.add('hidden');
   });
-  document.getElementById('close-cart').addEventListener('click', function() {
+  closeCart.addEventListener('click', function() {
     cartModal.classList.add('hidden');
   });
-  document.getElementById('prev-slide').addEventListener('click', prevSlide);
-  document.getElementById('next-slide').addEventListener('click', nextSlide);
+  prevSlideButton.addEventListener('click', prevSlide);
+  nextSlideButton.addEventListener('click', nextSlide);
   
   searchButton.addEventListener('click', searchRecipe);
   searchInput.addEventListener('keypress', function(e) {
@@ -61,14 +74,17 @@ function setupEvents() {
   });
 }
 
+// Show loading spinner
 function showLoader() {
   loadingElement.classList.remove('hidden');
 }
 
+// Hide loading spinner
 function hideLoader() {
   loadingElement.classList.add('hidden');
 }
 
+// Make API calls
 async function callApi(url) {
   try {
     showLoader();
@@ -85,6 +101,7 @@ async function callApi(url) {
   }
 }
 
+// Get available cuisines
 async function getCuisines(forceLoad = false) {
   if (cuisineList.length > 0 && !forceLoad) {
     updateFilters();
@@ -143,6 +160,7 @@ async function getCuisines(forceLoad = false) {
   }
 }
 
+// Update filter buttons
 function updateFilters() {
   filterButtons.innerHTML = '';
 
@@ -170,6 +188,7 @@ function updateFilters() {
   });
 }
 
+// Filter recipes by cuisine
 function filterByCuisine(cuisine) {
   currentOffset = 0;
   activeFilter = cuisine;
@@ -184,6 +203,7 @@ function filterByCuisine(cuisine) {
   getRecipes(url);
 }
 
+// Get recipes from API
 async function getRecipes(url, addMore = false) {
   try {
     let data = await callApi(url);
@@ -203,6 +223,7 @@ async function getRecipes(url, addMore = false) {
   }
 }
 
+// Create recipe card HTML
 function makeRecipeCard(recipe) {
   let card = document.createElement('div');
   card.className = "bg-white rounded-lg shadow-md overflow-hidden relative group";
@@ -233,6 +254,7 @@ function makeRecipeCard(recipe) {
   return card;
 }
 
+// Setup event listeners for recipe cards
 function setupRecipeEvents() {
   document.querySelectorAll('.add-cart').forEach(btn => {
     btn.addEventListener('click', function(e) {
@@ -267,6 +289,7 @@ function setupRecipeEvents() {
   });
 }
 
+// Show favorites modal
 function showFavorites() {
   showLoader();
   setTimeout(() => {
@@ -289,6 +312,7 @@ function showFavorites() {
   }, 300);
 }
 
+// Show cart modal
 function showCart() {
   showLoader();
   setTimeout(() => {
@@ -313,16 +337,19 @@ function showCart() {
   }, 300);
 }
 
+// Remove favorite
 function removeFavorite(index) {
   favoritesList.splice(index, 1);
   showFavorites();
 }
 
+// Remove cart item
 function removeCartItem(index) {
   cartItems.splice(index, 1);
   showCart();
 }
 
+// Load more recipes
 function loadMore() {
   currentOffset += 20;
   let url = activeFilter === 'all'
@@ -331,6 +358,7 @@ function loadMore() {
   getRecipes(url, true);
 }
 
+// Get slideshow data
 async function getSlideshow() {
   try {
     let data = await callApi(`${apiUrl}/complexSearch?apiKey=${apiKey}&number=5`);
@@ -344,6 +372,7 @@ async function getSlideshow() {
   }
 }
 
+// Change slideshow slide
 function changeSlide() {
   if (slidesData.length === 0) return;
   let slide = slidesData[currentSlide];
@@ -360,22 +389,26 @@ function changeSlide() {
   `;
 }
 
+// Auto slide change
 function autoSlide() {
   if (slidesData.length > 1) {
     setInterval(nextSlide, 5000);
   }
 }
 
+// Next slide
 function nextSlide() {
   currentSlide = (currentSlide + 1) % slidesData.length;
   changeSlide();
 }
 
+// Previous slide
 function prevSlide() {
   currentSlide = (currentSlide - 1 + slidesData.length) % slidesData.length;
   changeSlide();
 }
 
+// Search for recipes
 async function searchRecipe() {
   let query = searchInput.value.trim();
   if (!query) return;
@@ -400,6 +433,7 @@ async function searchRecipe() {
   }
 }
 
+// Show recipe details in modal
 async function showRecipeDetails(recipe) {
   try {
     showLoader();
@@ -459,7 +493,10 @@ async function showRecipeDetails(recipe) {
   }
 }
 
+// Start the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', startWebsite);
+
+// Make functions available globally
 window.removeFavorite = removeFavorite;
 window.removeCartItem = removeCartItem;
 window.getCuisines = getCuisines;
