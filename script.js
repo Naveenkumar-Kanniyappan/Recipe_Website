@@ -1,7 +1,7 @@
 let recipesContainer = document.getElementById('recipes');
 let favoritesList = [];
 let cartItems = [];
-let apiKey = 'a543eedeabbf48eebc981715cc33b720';
+let apiKey = 'c2d1544978b140ddaf69fbd965048dc7';
 let apiUrl = 'https://api.spoonacular.com/recipes';
 let currentOffset = 0;
 let activeFilter = 'all';
@@ -19,7 +19,20 @@ let cartElement = document.getElementById('cart-list');
 let cartTotal = document.getElementById('cart-total');
 let moreButton = document.getElementById('more');
 
-function startApp() {
+let searchInput = document.getElementById('search-input');
+let searchButton = document.getElementById('search-button');
+let recipeModal = document.getElementById('recipe-modal');
+let modalRecipeTitle = document.getElementById('modal-recipe-title');
+let modalRecipeImage = document.getElementById('modal-recipe-image');
+let modalRecipePrice = document.getElementById('modal-recipe-price');
+let modalRecipeSummary = document.getElementById('modal-recipe-summary');
+let modalRecipeIngredients = document.getElementById('modal-recipe-ingredients');
+let modalAddCart = document.getElementById('modal-add-cart');
+let modalAddFavorite = document.getElementById('modal-add-favorite');
+let closeRecipe = document.getElementById('close-recipe');
+let currentRecipe = null;
+
+function startWebsite() {
   setupEvents();
   getCuisines(true);
   getRecipes(`${apiUrl}/complexSearch?apiKey=${apiKey}&number=20&offset=${currentOffset}`);
@@ -38,6 +51,14 @@ function setupEvents() {
   });
   document.getElementById('prev-slide').addEventListener('click', prevSlide);
   document.getElementById('next-slide').addEventListener('click', nextSlide);
+  
+  searchButton.addEventListener('click', searchRecipe);
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') searchRecipe();
+  });
+  closeRecipe.addEventListener('click', function() {
+    recipeModal.classList.add('hidden');
+  });
 }
 
 function showLoader() {
@@ -88,7 +109,7 @@ async function getCuisines(forceLoad = false) {
       
       if (recipe.dishTypes && recipe.dishTypes.length) {
         recipe.dishTypes.forEach(dish => {
-          let possible = [];
+          let possible = ['Italian', 'Mexican', 'Asian', 'Indian', 'Mediterranean'];
           possible.forEach(cuisine => {
             if (dish.toLowerCase().includes(cuisine.toLowerCase())) {
               foundCuisines.add(cuisine);
@@ -355,7 +376,90 @@ function prevSlide() {
   changeSlide();
 }
 
-document.addEventListener('DOMContentLoaded', startApp);
+async function searchRecipe() {
+  let query = searchInput.value.trim();
+  if (!query) return;
+
+  try {
+    showLoader();
+    let url = `${apiUrl}/complexSearch?apiKey=${apiKey}&query=${encodeURIComponent(query)}&number=1`;
+    let data = await callApi(url);
+    
+    if (data.results && data.results.length > 0) {
+      let recipe = data.results[0];
+      currentRecipe = recipe;
+      showRecipeDetails(recipe);
+    } else {
+      alert('No recipes found with that name');
+    }
+  } catch (error) {
+    console.log('Search error:', error);
+    alert('Error searching for recipe');
+  } finally {
+    hideLoader();
+  }
+}
+
+async function showRecipeDetails(recipe) {
+  try {
+    showLoader();
+    let detailsUrl = `${apiUrl}/${recipe.id}/information?apiKey=${apiKey}`;
+    let details = await callApi(detailsUrl);
+    
+    modalRecipeTitle.textContent = details.title;
+    modalRecipeImage.src = details.image;
+    modalRecipePrice.textContent = `$${(Math.random() * 20 + 5).toFixed(2)}`;
+    modalRecipeSummary.innerHTML = details.summary || 'No description available';
+    
+    modalRecipeIngredients.innerHTML = '';
+    if (details.extendedIngredients) {
+      details.extendedIngredients.slice(0, 5).forEach(ing => {
+        let li = document.createElement('li');
+        li.textContent = ing.original;
+        modalRecipeIngredients.appendChild(li);
+      });
+    }
+    
+    modalAddCart.onclick = function() {
+      cartItems.push({
+        title: details.title,
+        price: parseFloat(modalRecipePrice.textContent.replace('$', '')),
+        image: details.image
+      });
+      alert(`${details.title} added to cart!`);
+    };
+    
+    modalAddFavorite.onclick = function() {
+      let exists = favoritesList.findIndex(item => item.title === details.title);
+      if (exists >= 0) {
+        favoritesList.splice(exists, 1);
+        modalAddFavorite.classList.remove('text-red-700');
+        modalAddFavorite.classList.add('text-red-500');
+        modalAddFavorite.textContent = '♥ Favorite';
+        alert(`${details.title} removed from favorites!`);
+      } else {
+        favoritesList.push({
+          title: details.title,
+          price: parseFloat(modalRecipePrice.textContent.replace('$', '')),
+          image: details.image
+        });
+        modalAddFavorite.classList.remove('text-red-500');
+        modalAddFavorite.classList.add('text-red-700');
+        modalAddFavorite.textContent = '♥ Favorited';
+        alert(`${details.title} added to favorites!`);
+      }
+    };
+    
+    recipeModal.classList.remove('hidden');
+  } catch (error) {
+    console.log('Details error:', error);
+    alert('Error loading recipe details');
+  } finally {
+    hideLoader();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', startWebsite);
 window.removeFavorite = removeFavorite;
 window.removeCartItem = removeCartItem;
 window.getCuisines = getCuisines;

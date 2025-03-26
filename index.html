@@ -25,9 +25,16 @@
 </head>
 <body class="bg-gray-100">
   <header class="bg-green-600 text-white p-4 shadow-md">
-    <div class="container mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold">Recipe Finder</h1>
-      <div class="flex space-x-4">
+    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+      <h1 class="text-2xl font-bold mb-4 md:mb-0">Recipe Finder</h1>
+      <div class="flex flex-col md:flex-row w-full md:w-auto space-y-2 md:space-y-0 md:space-x-4">
+        <div class="relative w-full md:w-64">
+          <input type="text" id="search-input" placeholder="Search recipes..." 
+            class="w-full px-4 py-2 rounded text-gray-800 focus:outline-none">
+          <button id="search-button" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+            🔍
+          </button>
+        </div>
         <button id="favorites-button" class="bg-white text-green-600 px-4 py-2 rounded hover:bg-gray-100">
           Favorites
         </button>
@@ -44,9 +51,9 @@
       <div id="recipe-slideshow" class="bg-white rounded-lg shadow-md h-64 overflow-hidden relative">
         <!-- Slideshow content will be loaded here -->
       </div>
-      <div class="flex justify-center mt-2 space-x-4">
-        <button id="prev-slide" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Previous</button>
-        <button id="next-slide" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Next</button>
+      <div class="flex mt-2 space-x-4" style="position: relative; top: -160px; justify-content: space-between;">
+        <button id="prev-slide" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">&#60</button>
+        <button id="next-slide" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">&#62</button>
       </div>
     </section>
 
@@ -56,7 +63,7 @@
       <div id="filter-buttons-container" class="flex flex-wrap gap-2 mb-4">
         <!-- Filter buttons will be loaded here -->
       </div>
-    </section>
+    </section>-165px
 
     <!-- Recipes Grid -->
     <section>
@@ -107,6 +114,42 @@
       </ul>
       <div class="mt-4 pt-4 border-t">
         <p id="cart-total" class="text-lg font-bold">Total: $0.00</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe Details Modal -->
+  <div id="recipe-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="modal-recipe-title" class="text-2xl font-bold"></h2>
+        <button id="close-recipe" class="text-gray-500 hover:text-gray-700 text-2xl">
+          &times;
+        </button>
+      </div>
+      <div class="flex flex-col md:flex-row gap-6">
+        <div class="md:w-1/2">
+          <img id="modal-recipe-image" src="" alt="" class="w-full h-64 object-cover rounded-lg">
+        </div>
+        <div class="md:w-1/2">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-yellow-400 text-xl">★★★★☆</span>
+            <p id="modal-recipe-price" class="text-green-600 font-bold text-xl"></p>
+          </div>
+          <p id="modal-recipe-summary" class="text-gray-700 mb-4"></p>
+          <div class="mb-4">
+            <h3 class="font-bold text-lg mb-2">Ingredients:</h3>
+            <ul id="modal-recipe-ingredients" class="list-disc pl-5"></ul>
+          </div>
+          <div class="flex space-x-4">
+            <button id="modal-add-cart" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+              Add to Cart
+            </button>
+            <button id="modal-add-favorite" class="text-red-500 hover:text-red-700 px-4 py-2">
+              ♥ Favorite
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
